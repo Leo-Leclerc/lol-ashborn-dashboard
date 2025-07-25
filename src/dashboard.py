@@ -12,15 +12,17 @@ load_dotenv()
 
 def update_joueurs():
     ws = open_sheet("Joueurs")
-    ws.clear()
-    ws.append_row(["Nom", "PUUID", "Niveau", "Rang", "Winrate", "Dernière activité"])
-
-    names = ws.col_values(1)[1:]
-if not names:
-    raise ValueError("Aucun nom d’invocateur trouvé dans la colonne A de la feuille « Joueurs »")
+    names = ws.col_values(1)[1:] or []
+    # on ne touche PAS à la feuille tant que tout n’est pas récupéré
+    rows = [["Nom", "PUUID", "Niveau", "Rang", "Winrate", "Dernière activité"]]
 
     for name in names:
-        summoner = get_summoner_info(name)
+        try:
+            summoner = get_summoner_info(name)
+        except Exception as e:
+            print(f"⚠️ Impossible de récupérer {name} : {e}")
+            continue
+
         summoner_id = summoner["id"]
         puuid = summoner["puuid"]
         level = summoner["summonerLevel"]
@@ -33,8 +35,12 @@ if not names:
         else:
             winrate, rang = "0%", "UNRANKED"
 
-        ws.append_row([name, puuid, level, rang, winrate, datetime.utcnow().strftime("%Y-%m-%d")])
+        rows.append([name, puuid, level, rang, winrate, datetime.utcnow().strftime("%Y-%m-%d")])
         time.sleep(1)
+
+    # on efface ET on écrit d’un coup
+    ws.clear()
+    ws.update("A1", rows)
 
 def update_matchs():
     ws = open_sheet("Joueurs")
