@@ -15,7 +15,9 @@ def update_joueurs():
     ws.clear()
     ws.append_row(["Nom", "PUUID", "Niveau", "Rang", "Winrate", "Dernière activité"])
 
-    names = ws.col_values(1)[1:] or ["AshbornTop", "AshbornJgl", "AshbornMid", "AshbornAdc", "AshbornSup"]
+    names = ws.col_values(1)[1:]
+if not names:
+    raise ValueError("Aucun nom d’invocateur trouvé dans la colonne A de la feuille « Joueurs »")
 
     for name in names:
         summoner = get_summoner_info(name)
