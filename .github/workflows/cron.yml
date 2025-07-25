@@ -10,12 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - run: pip install -r requirements.txt
-      - run: python main.py
+
+      # Étape clé : recréer google_creds.json à partir du secret
+      - name: Create google_creds.json
+        run: echo "${{ secrets.GOOGLE_CREDS_JSON_BASE64 }}" | base64 -d > google_creds.json
+
+      - name: Run dashboard update
         env:
           RIOT_API_KEY: ${{ secrets.RIOT_API_KEY }}
           GOOGLE_CREDS_PATH: google_creds.json
           SPREADSHEET_NAME: ${{ secrets.SPREADSHEET_NAME }}
+        run: python main.py
