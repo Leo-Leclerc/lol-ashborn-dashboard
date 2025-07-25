@@ -1,11 +1,9 @@
 # LoL Ashborn Dashboard
 
-Récupère les statistiques de vos joueurs via l’API Riot et les pousse dans Google Sheets.
+Récupère les stats des joueurs Ashborn via l’API Riot → Google Sheets  
++ graphique d’évolution (KDA & winrate glissants).
 
-## Quick-start
-
-1. Cloner le repo :
-   ```bash
-   git clone https://github.com/<ton-compte>/lol-esport-dashboard.git
-   cd lol-esport-dashboard
-
+1. Cloner, `pip install -r requirements.txt`
+2. Copier `.env.example → .env`
+3. Lancer `python main.py`
+4. GitHub Actions lancera la maj chaque jour à 7h UTC
